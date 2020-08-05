@@ -46,7 +46,7 @@ LCD circut
 #include <LiquidCrystal.h>
 
 int inches = 0;
-
+const int buzzer = 9;
 int cm = 0;
 
 long readUltrasonicDistance(int triggerPin, int echoPin)
@@ -70,35 +70,37 @@ void setup() {
   
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-  // Print a message to the LCD.
-  lcd.print ("Inches Cent");
-  Serial.begin(9600);
-}
 
+  Serial.begin(9600);
+ 
+} 
 void loop() {
 
   // measure the ping time in cm
   cm = 0.01723 * readUltrasonicDistance(7, 7);
   // convert to inches by dividing by 2.54
   inches = (cm / 2.54);
-    //Serial.print(inches);
-  Serial.print(inches);
-  Serial.print("in, ");
-  Serial.print(cm);
-  Serial.println("cm");
-  //delay(50);
-  if(cm > 0){
-    Serial.print(inches);
-  	//Serial.print("in, ");
-    //lcd print inches
-    lcd.setCursor(0,2);
-    lcd.print(inches);
-    lcd.setCursor(8,2);
-    lcd.print( cm);
-   
-  }
-
-   
-  }
   
- 
+  //if nothing is in the sensor's range it will continuously display 132 inches which is past its range
+  if(inches <=131 ){
+    
+    Serial.print(inches);
+
+    lcd.setCursor(4,0);
+    lcd.print("CAUTION");
+    
+    lcd.setCursor(0,1);
+    lcd.print( inches);
+    
+    lcd.setCursor(10,2);
+    lcd.print("INCHES");
+    delay(300);
+    lcd.clear();
+   
+  }
+  else{
+   lcd.home();  
+   lcd.print("clear");
+  }	
+    	
+  }
