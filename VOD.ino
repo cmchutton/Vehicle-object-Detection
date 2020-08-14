@@ -1,46 +1,7 @@
-/*
-  Ping))) Sensor
-
-  This sketch reads a PING))) ultrasonic
-  rangefinder and returns the distance to the
-  closest object in range. To do this, it sends a
-  pulse to the sensor to initiate a reading, then
-  listens for a pulse to return.  The length of
-  the returning pulse is proportional to the
-  distance of the object from the sensor.
-
-  The circuit:
-   * +V connection of the PING))) attached to +5V
-   * GND connection attached to ground
-   * SIG connection attached to digital pin 7
-
-LCD circut
 
 
-  The circuit:
- * LCD RS pin to digital pin 12
- * LCD Enable pin to digital pin 11
- * LCD D4 pin to digital pin 5
- * LCD D5 pin to digital pin 4
- * LCD D6 pin to digital pin 3
- * LCD D7 pin to digital pin 2
- * LCD R/W pin to ground
- * LCD VSS pin to ground
- * LCD VCC pin to 5V
- * 10K resistor:
- * ends to +5V and ground
- * wiper to LCD VO pin (pin 3)
 
- Library originally added 18 Apr 2008
- by David A. Mellis
- library modified 5 Jul 2009
- by Limor Fried (http://www.ladyada.net)
- example added 9 Jul 2009
- by Tom Igoe
- modified 22 Nov 2010
- by Tom Igoe
 
- */
 
 // include the library code:
 #include <LiquidCrystal.h>
@@ -64,7 +25,7 @@ long readUltrasonicDistance(int triggerPin, int echoPin)
 }
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(7,8,9,10,11,12);
 
 void setup() {
   
@@ -76,31 +37,40 @@ void setup() {
 } 
 void loop() {
 
-  // measure the ping time in cm
-  cm = 0.01723 * readUltrasonicDistance(7, 7);
-  // convert to inches by dividing by 2.54
-  inches = (cm / 2.54);
+  // measure the ping time, multiply by speed of sound in cm per microsecond / 2 for travel and return
+  cm =  readUltrasonicDistance(3, 2)*  0.034/2;  
+  
+ // measure the ping time, multiply by speed of sound in inches per microsecond / 2 travel time and return time
+  inches = readUltrasonicDistance(3, 2) * 0.0135/2; 
+ 
   
   //if nothing is in the sensor's range it will continuously display 132 inches which is past its range
+  
   if(inches <=131 ){
-    
-    Serial.print(inches);
-
-    lcd.setCursor(4,0);
-    lcd.print("CAUTION");
-    
-    lcd.setCursor(0,1);
-    lcd.print( inches);
-    
-    lcd.setCursor(10,2);
-    lcd.print("INCHES");
-    delay(300);
-    lcd.clear();
+     lcd.setCursor(0,0);
+     lcd.print("Distance: ");
+     lcd.print(inches);
+     lcd.print("in");
+     delay(30);
+     lcd.setCursor(0,1);
+     lcd.print("Distance: ");
+     lcd.print(cm);
+     lcd.print("cm");
+     delay(30);
+   
+   
    
   }
   else{
+   lcd.clear();
    lcd.home();  
    lcd.print("clear");
-  }	
-    	
+   
+
+   
+  }  
+    
+
+    
+     
   }
